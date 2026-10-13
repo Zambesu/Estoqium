@@ -158,11 +158,14 @@ class MainWindow(tk.Tk):
                 self.dashboard_page = DashboardPage(page, self.service)
                 self.dashboard_page.pack(fill='both', expand=True)
             elif name == 'Produtos':
-                ProductsPage(page, self.service).pack(fill='both', expand=True)
+                self.products_page = ProductsPage(page, self.service)
+                self.products_page.pack(fill='both', expand=True)
             elif name == 'Movimentações':
-                MovementsPage(page, self.service).pack(fill='both', expand=True)
+                self.movements_page = MovementsPage(page, self.service)
+                self.movements_page.pack(fill='both', expand=True)
             elif name == 'Relatórios':
-                ReportsPage(page, self.report_service).pack(fill='both', expand=True)
+                self.reports_page = ReportsPage(page, self.report_service)
+                self.reports_page.pack(fill='both', expand=True)
             elif name == 'Configurações':
                 SettingsPage(page, self.db_path).pack(fill='both', expand=True)
             else:
@@ -191,12 +194,20 @@ class MainWindow(tk.Tk):
             bg=self.SIDEBAR_HOVER if entering else self.SIDEBAR_BG
         )
 
-
-        if page == 'Dashboard':
-            self.dashboard_page.refresh()
     def show_page(self, page: str) -> None:
         self.current_page = page
         self.pages[page].tkraise()
+
+        if page == 'Dashboard':
+            self.dashboard_page.refresh()
+        elif page == 'Produtos':
+            self.products_page.carregar_categorias()
+            self.products_page.carregar_produtos()
+        elif page == 'Movimentações':
+            self.movements_page.carregar_produtos_ativos()
+            self.movements_page.carregar_movimentacoes()
+        elif page == 'Relatórios':
+            self.reports_page.gerar_relatorio()
 
         for name, button in self.nav_buttons.items():
             selected = name == page
