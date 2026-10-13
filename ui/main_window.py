@@ -4,10 +4,13 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import ttk
 
+from reports import ReportService
 from services import EstoqueService
 
+from .dashboard_page import DashboardPage
 from .movements_page import MovementsPage
 from .products_page import ProductsPage
+from .reports_page import ReportsPage
 
 
 class MainWindow(tk.Tk):
@@ -22,6 +25,7 @@ class MainWindow(tk.Tk):
         super().__init__()
         self.db_path = Path(db_path)
         self.service = EstoqueService(self.db_path)
+        self.report_service = ReportService(self.db_path)
         self.current_page = ''
 
         self.title('Estoqium')
@@ -149,10 +153,15 @@ class MainWindow(tk.Tk):
                 fg=self.TEXT_MUTED,
             ).pack(anchor='w', pady=(4, 0))
 
-            if name == 'Produtos':
+            if name == 'Dashboard':
+                self.dashboard_page = DashboardPage(page, self.service)
+                self.dashboard_page.pack(fill='both', expand=True)
+            elif name == 'Produtos':
                 ProductsPage(page, self.service).pack(fill='both', expand=True)
             elif name == 'Movimentações':
                 MovementsPage(page, self.service).pack(fill='both', expand=True)
+            elif name == 'Relatórios':
+                ReportsPage(page, self.report_service).pack(fill='both', expand=True)
             else:
                 card = tk.Frame(
                     page,
@@ -179,6 +188,9 @@ class MainWindow(tk.Tk):
             bg=self.SIDEBAR_HOVER if entering else self.SIDEBAR_BG
         )
 
+
+        if page == 'Dashboard':
+            self.dashboard_page.refresh()
     def show_page(self, page: str) -> None:
         self.current_page = page
         self.pages[page].tkraise()

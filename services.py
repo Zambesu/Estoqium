@@ -244,6 +244,63 @@ class EstoqueService:
         rows = execute_query(query, params, self.db_path)
         return [self._row_to_movimentacao(row) for row in rows]
 
+    def obter_resumo_dashboard(self) -> dict[str, int | float]:
+        row = fetch_one(
+            '''
+            SELECT COUNT(*) AS total_ativos,
+                   COALESCE(SUM(CASE WHEN quantidade <= quantidade_minima THEN 1 ELSE 0 END), 0) AS estoque_baixo,
+                   COALESCE(SUM(quantidade * preco_custo), 0) AS valor_estoque
+              FROM produtos
+             WHERE ativo = 1;
+            ''',
+            db_path=self.db_path,
+        )
+        return {
+            'produtos_ativos': int(row['total_ativos']) if row else 0,
+            'estoque_baixo': int(row['estoque_baixo']) if row else 0,
+            'valor_estoque': float(row['valor_estoque']) if row else 0.0,
+        }
+
+    def listar_produtos_reposicao(self) -> list[Produto]:
+        rows = execute_query(
+            '''
+            SELECT * FROM produtos
+             WHERE ativo = 1 AND quantidade <= quantidade_minima
+             ORDER BY quantidade ASC, nome COLLATE NOCASE;
+            ''',
+            db_path=self.db_path,
+        )
+        return [self._row_to_produto(row) for row in rows]
+
+    def listar_ultimas_movimentacoes(self, limite: int = 10) -> list[dict[str, object]]:
+        rows = execute_query(
+            '''
+            SELECT m.id,
+                   p.nome AS produto_nome,
+                   m.tipo,
+                   m.quantidade,
+                   m.data_movimentacao,
+                   m.observacao
+              FROM movimentacoes m
+              INNER JOIN produtos p ON p.id = m.produto_id
+             ORDER BY m.data_movimentacao DESC, m.id DESC
+             LIMIT ?;
+            ''',
+            (limite,),
+            self.db_path,
+        )
+        return [
+            {
+                'id': int(row['id']),
+                'produto_nome': str(row['produto_nome']),
+                'tipo': str(row['tipo']),
+                'quantidade': int(row['quantidade']),
+                'data_movimentacao': str(row['data_movimentacao']),
+                'observacao': str(row['observacao']),
+            }
+            for row in rows
+        ]
+
     def _validar_produto(self, produto: Produto, validar_quantidade: bool) -> None:
         if not produto.nome.strip():
             raise ValueError('Informe o nome do produto.')
