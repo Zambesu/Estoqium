@@ -131,3 +131,7 @@ O projeto segue camadas separadas: a interface (`ui/`) não contém regras de ne
 - O sistema funciona totalmente offline: nenhum dado sai do computador.
 - Os dados ficam em um banco SQLite local na pasta `data/`.
 - Todas as mensagens da interface estão em português brasileiro.
+
+## Licença
+
+Este projeto é distribuído sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
