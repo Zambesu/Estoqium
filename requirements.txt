@@ -1,2 +1,5 @@
-# Nenhuma dependência externa é necessária nesta etapa.
+# Nenhuma dependência externa é necessária para executar o aplicativo.
 # Tkinter e SQLite fazem parte da biblioteca padrão do Python.
+
+# Dependência de desenvolvimento (testes automatizados):
+pytest>=8.0

@@ -11,6 +11,7 @@ from .dashboard_page import DashboardPage
 from .movements_page import MovementsPage
 from .products_page import ProductsPage
 from .reports_page import ReportsPage
+from .settings_page import SettingsPage
 
 
 class MainWindow(tk.Tk):
@@ -162,6 +163,8 @@ class MainWindow(tk.Tk):
                 MovementsPage(page, self.service).pack(fill='both', expand=True)
             elif name == 'Relatórios':
                 ReportsPage(page, self.report_service).pack(fill='both', expand=True)
+            elif name == 'Configurações':
+                SettingsPage(page, self.db_path).pack(fill='both', expand=True)
             else:
                 card = tk.Frame(
                     page,

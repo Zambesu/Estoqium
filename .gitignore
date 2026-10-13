@@ -10,3 +10,4 @@ backups/
 *.log
 Ideia.txt
 CONTEXTO.md
+tests/
