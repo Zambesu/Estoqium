@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.vscode/
+data/*.db
+data/*.db-*
+backups/
+*.log
+Ideia.txt
+CONTEXTO.md

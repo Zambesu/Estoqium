@@ -1,0 +1,2 @@
+# Nenhuma dependência externa é necessária nesta etapa.
+# Tkinter e SQLite fazem parte da biblioteca padrão do Python.
