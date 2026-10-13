@@ -39,7 +39,13 @@ Sistema desktop local para controle de estoque de pequenos comércios, desenvolv
 - Restauração com validação de integridade do arquivo, confirmação explícita e preservação do banco atual em caso de falha.
 - Versão do aplicativo e informações sobre o funcionamento offline.
 
-## Requisitos
+## Baixar e usar (sem instalar Python)
+
+Baixe o `Estoqium.exe` na página de [Releases](../../releases) e execute. Nenhuma instalação é necessária — o banco de dados é criado automaticamente em `data/estoque.db`, na mesma pasta do executável.
+
+> O Windows SmartScreen pode exibir um aviso por ser um executável sem assinatura digital; clique em "Mais informações" → "Executar assim mesmo".
+
+## Requisitos (para desenvolvedores)
 
 - Python 3.10 ou superior.
 - Nenhuma dependência externa para executar o aplicativo (Tkinter e SQLite fazem parte da biblioteca padrão).
@@ -67,6 +73,29 @@ python -m pytest tests -v
 ```
 
 A suíte usa bancos temporários e não altera os dados reais. Cobre inicialização do banco, regras de produtos e movimentações, cálculos do Dashboard, relatórios, backup e restauração.
+
+## Gerar o executável (Windows)
+
+Requer as dependências de desenvolvimento:
+
+```powershell
+pip install pyinstaller pillow
+python assets\create_icon.py        # apenas se o ícone ainda não existir
+pyinstaller --noconfirm Estoqium.spec
+```
+
+O executável é gerado em `dist/Estoqium.exe`, com ícone e informações de versão (definidas em `version_info.txt` e `app_info.py`). O banco de dados é criado automaticamente em `data/estoque.db`, ao lado do executável, na primeira execução.
+
+### Publicar uma release no GitHub
+
+O repositório tem um workflow (`.github/workflows/release.yml`) que roda os testes, compila o executável e publica a release automaticamente. Para publicar uma nova versão:
+
+```powershell
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+O `Estoqium.exe` ficará disponível para download na página de Releases do repositório.
 
 ## Estrutura do projeto
 

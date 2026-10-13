@@ -8,6 +8,5 @@ data/*.db
 data/*.db-*
 backups/
 *.log
-Ideia.txt
-CONTEXTO.md
-tests/
+build/
+dist/

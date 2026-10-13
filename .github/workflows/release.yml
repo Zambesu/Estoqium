@@ -1,0 +1,45 @@
+name: Build e Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Instalar dependencias de desenvolvimento
+        run: pip install pytest pyinstaller pillow
+
+      - name: Executar testes
+        run: python -m pytest tests -q
+
+      - name: Gerar icone (se necessario)
+        run: |
+          if (-not (Test-Path assets\estoqium.ico)) {
+            python assets\create_icon.py
+          }
+
+      - name: Compilar executavel
+        run: pyinstaller --noconfirm Estoqium.spec
+
+      - name: Compactar executavel
+        run: Compress-Archive -Path dist\Estoqium.exe -DestinationPath dist\Estoqium-windows.zip -Force
+
+      - name: Publicar release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Estoqium.exe
+            dist/Estoqium-windows.zip
+          generate_release_notes: true

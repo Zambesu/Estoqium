@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import sqlite3
+import sys
 from contextlib import closing
 from pathlib import Path
 from typing import Iterable, Sequence
 
-BASE_DIR = Path(__file__).resolve().parent
+if getattr(sys, 'frozen', False):
+    # Executável PyInstaller: usa a pasta do .exe, não o diretório temporário.
+    BASE_DIR = Path(sys.executable).resolve().parent
+else:
+    BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / 'data'
 DEFAULT_DB_PATH = DATA_DIR / 'estoque.db'
 
